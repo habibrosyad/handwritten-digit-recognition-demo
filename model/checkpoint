@@ -1,0 +1,2 @@
+model_checkpoint_path: "/content/drive/MyDrive/Colab Notebooks/model/model.tfl"
+all_model_checkpoint_paths: "/content/drive/MyDrive/Colab Notebooks/model/model.tfl"

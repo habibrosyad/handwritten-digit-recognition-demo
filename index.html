@@ -1,0 +1,75 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="user-scalable=no">
+  <title>Handwritten Digit Recognition Demo</title>
+  <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+  <style>
+    body{background: #333; margin: 0}
+    canvas{background: #000}
+    button{border: 0; background: #555; color: #fff; height: 2rem; width: 280px}
+    button:hover{background: #666; cursor: pointer}
+    h1{color: #fff}
+    .container{display: inline-block; vertical-align:top; color: #fff}
+    .display{margin-left: 3rem}
+    .frame{position: absolute; top: 36px; left: 36px; width: 200px; height: 200px; border: 2px solid #555; pointer-events: none}
+    .update{color: #ccc}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <canvas id="canvas" width="280" height="280">Browser not supported</canvas>
+    <div class="frame"></div>
+    <div>
+      <button class="pred_bt" onClick="post_img()">Predict</button>
+    </div>
+  </div>
+  <div class="container display">
+    <h2>Prediction</h2>
+    <div class="update"></div>
+  </div>
+  <script>
+    var $canvas = $("#canvas");
+    var context = $canvas[0].getContext("2d");
+    var lastEvent;
+    var mouseDown = false;
+
+    $canvas.mousedown(function(e) {
+        lastEvent = e;
+        mouseDown = true;
+    }).mousemove(function(e) {
+        if (mouseDown) {
+            //Draw lines
+            context.beginPath();
+            context.moveTo(lastEvent.offsetX, lastEvent.offsetY);
+            context.lineTo(e.offsetX, e.offsetY);
+            context.strokeStyle = '#fff';
+            context.stroke();
+            lastEvent = e;
+        }
+    }).mouseup(function() {
+        mouseDown = false;
+    }).mouseleave(function() {
+        $canvas.mouseup();
+    });
+
+    var clear_canvas = function(){
+        console.log('sfsdf');
+        context.clearRect(0, 0, $canvas.width, $canvas.height);
+    };
+    var update = function(result){
+        $('.update').html(result);
+        $('.pred_bt').html('Predict');
+    }
+    var post_img = function(data){
+        $('.pred_bt').html('Processing...');
+        // Paste the Ngrok generated link here with format <Ngrok link>/predict.
+        $.post(
+        'http://4c9c-34-86-183-27.ngrok.io/predict', 
+        {img: document.getElementById('canvas').toDataURL()}, 
+        function(data){update(data['result'])}
+        );
+    };
+  </script>
+</body>
+</html>
